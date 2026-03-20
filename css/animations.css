@@ -1,0 +1,152 @@
+/* Animations keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(99, 102, 241, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    }
+}
+
+/* Classes d'animations */
+.animate-fade-in {
+    animation: fadeIn var(--transition-normal) ease;
+}
+
+.animate-slide-up {
+    animation: slideInUp var(--transition-normal) ease;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease infinite;
+}
+
+.animate-shake {
+    animation: shake 0.3s ease;
+}
+
+/* Animations pour les tâches */
+.task-item {
+    animation: slideInUp 0.3s ease;
+    transition: all var(--transition-normal);
+}
+
+.task-item.removing {
+    animation: slideOutRight 0.3s ease forwards;
+}
+
+.task-item.completed {
+    animation: glow 0.5s ease;
+}
+
+/* Animation de chargement */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--bg-tertiary);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Transition pour les boutons */
+.btn-primary, .icon-btn, .filter-btn, .footer-btn {
+    transition: all var(--transition-fast);
+}
+
+/* Hover animations */
+.task-item:hover {
+    transform: translateX(5px);
+    transition: transform var(--transition-fast);
+}
+
+/* Animation de confirmation */
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    display: inline-block;
+    animation: bounce 0.5s ease;
+}

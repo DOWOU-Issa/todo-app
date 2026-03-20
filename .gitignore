@@ -1,0 +1,208 @@
+# ============================================
+# To-Do List Pro - Git Ignore File
+# Projet L3 IABD - Application de gestion de tâches
+# ============================================
+
+# ----------------------------
+# Fichiers système
+# ----------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# ----------------------------
+# IDEs et éditeurs
+# ----------------------------
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ / WebStorm / PHPStorm
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+.sublime/
+
+# Vim
+*.vimrc
+*.viminfo
+
+# ----------------------------
+# Fichiers de dépendances
+# ----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ----------------------------
+# Fichiers de build et distribution
+# ----------------------------
+dist/
+build/
+*.min.js
+*.min.css
+coverage/
+.nyc_output/
+
+# ----------------------------
+# Fichiers d'environnement
+# ----------------------------
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+
+# ----------------------------
+# Fichiers de cache
+# ----------------------------
+.cache/
+.parcel-cache/
+.eslintcache
+.prettiercache
+*.tsbuildinfo
+
+# ----------------------------
+# Fichiers de logs
+# ----------------------------
+logs/
+*.log
+log.txt
+error.log
+
+# ----------------------------
+# Fichiers de test
+# ----------------------------
+/test-results/
+/tests/coverage/
+*.test.js
+*.spec.js
+
+# ----------------------------
+# Fichiers audio (optionnel)
+# Les fichiers audio sont exclus car volumineux
+# Les utilisateurs devront télécharger leur propre musique
+# ----------------------------
+assets/sounds/*.mp3
+assets/sounds/*.wav
+assets/sounds/*.ogg
+!assets/sounds/.gitkeep
+
+# Si tu veux garder la musique, commente les lignes ci-dessus
+# et décommente celle-ci :
+# assets/sounds/jazz-cafe.mp3
+
+# ----------------------------
+# Fichiers temporaires du projet
+# ----------------------------
+*.pid
+*.seed
+*.pid.lock
+
+# ----------------------------
+# Fichiers de sauvegarde du navigateur
+# ----------------------------
+*.localStorage
+*.sessionStorage
+
+# ----------------------------
+# Fichiers de documentation auto-générés
+# ----------------------------
+/docs/_build/
+/docs/.build/
+
+# ----------------------------
+# Archives et packages
+# ----------------------------
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.tgz
+
+# ----------------------------
+# Fichiers spécifiques au projet
+# ----------------------------
+# Sauvegardes exportées par l'application
+todo_backup_*.json
+todo_export_*.json
+todo_export_*.csv
+todo_export_*.txt
+todo_export_*.html
+todo_export_*.pdf
+
+# Paramètres exportés
+todo_settings_*.json
+
+# ----------------------------
+# OS spécifiques
+# ----------------------------
+# Windows
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.document
+.mime
+.dmrc
+.dbus
+
+# macOS
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# ----------------------------
+# Docker
+# ----------------------------
+docker-compose.override.yml
+.dockerignore
+
+# ----------------------------
+# Secrets
+# ----------------------------
+*.pem
+*.key
+*.crt
+*.cert
+secrets/

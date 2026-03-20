@@ -1,0 +1,180 @@
+/* Responsive Design - Mobile First */
+
+/* Tablettes et petits écrans */
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-sm);
+    }
+    
+    .app-header {
+        padding: var(--spacing-md);
+    }
+    
+    .main-content {
+        padding: var(--spacing-md);
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .add-task-container {
+        flex-direction: column;
+    }
+    
+    .btn-primary {
+        justify-content: center;
+    }
+    
+    .filters-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-tabs {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-info {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: var(--spacing-md);
+    }
+    
+    .modal-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobiles */
+@media (max-width: 480px) {
+    .app-title {
+        font-size: 1.25rem;
+    }
+    
+    .logo-icon {
+        font-size: 1.5rem;
+    }
+    
+    .stats-bar {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .filter-btn span:not(.filter-count) {
+        display: none;
+    }
+    
+    .filter-btn {
+        padding: var(--spacing-sm);
+    }
+    
+    .tasks-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .footer-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .footer-btn {
+        justify-content: center;
+    }
+    
+    .quick-suggestions {
+        justify-content: center;
+    }
+    
+    .suggestion-badge {
+        font-size: 0.75rem;
+    }
+    
+    .task-item {
+        font-size: 0.875rem;
+    }
+}
+
+/* Grands écrans */
+@media (min-width: 1200px) {
+    .app-container {
+        max-width: 1400px;
+    }
+    
+    .stats-bar {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Impression */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+    
+    .app-header, 
+    .quick-add-section,
+    .filters-section,
+    .app-footer,
+    .icon-btn,
+    .clear-completed-btn,
+    .modal {
+        display: none;
+    }
+    
+    .tasks-list {
+        display: block;
+    }
+    
+    .task-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: var(--spacing-md);
+    }
+}
+
+/* Support du mode sombre (préférence système) */
+@media (prefers-color-scheme: dark) {
+    :root:not(.light-mode) {
+        --bg-primary: #1f2937;
+        --bg-secondary: #111827;
+        --bg-tertiary: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #9ca3af;
+        --text-tertiary: #6b7280;
+        --border-color: #374151;
+    }
+}
+
+/* Orientation paysage sur mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .app-header {
+        padding: var(--spacing-sm);
+    }
+    
+    .stats-bar {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .tasks-container {
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+}

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Application professionnelle de gestion de tâches avec persistance des données">
+    <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+    <title>To-Do List Pro | Gestion de Tâches</title>
+
+    <!-- Chart.js pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- jsPDF pour l'export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Font Awesome pour les icônes (CDN gratuit) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts pour une typographie moderne -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <!-- Nos styles CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Overlay pour les modals -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    
+    <!-- Container principal -->
+    <div class="app-container">
+        
+        <!-- En-tête avec navigation -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-check-circle logo-icon" aria-hidden="true"></i>
+                    <h1 class="app-title">To-Do List <span class="title-highlight">Pro</span></h1>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Mode sombre/clair -->
+                    <button class="icon-btn theme-toggle" id="themeToggle" aria-label="Changer de thème (Mode sombre/clair)">
+                        <i class="fas fa-moon" aria-hidden="true"></i>
+                    </button>
+                    
+                    <!-- Notifications -->
+                    <button class="icon-btn notification-btn" id="notificationBtn" aria-label="Notifications">
+                        <i class="fas fa-bell" aria-hidden="true"></i>
+                        <span class="notification-badge" id="notificationBadge" aria-label="Nombre de notifications">0</span>
+                    </button>
+                    
+                    <!-- Paramètres -->
+                    <button class="icon-btn settings-btn" id="settingsBtn" aria-label="Paramètres">
+                        <i class="fas fa-cog" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Contenu principal -->
+        <main class="main-content">
+            
+            <!-- Barre d'ajout rapide -->
+            <div class="quick-add-section">
+                <div class="add-task-container">
+                    <label for="taskInput" class="visually-hidden">Nouvelle tâche</label>
+                    <input 
+                        type="text" 
+                        id="taskInput" 
+                        class="task-input" 
+                        placeholder="Ajouter une nouvelle tâche... (appuyez sur Enter)"
+                        autocomplete="off"
+                        maxlength="200"
+                        aria-label="Titre de la nouvelle tâche"
+                    >
+                    <button id="addTaskBtn" class="btn-primary add-task-btn" aria-label="Ajouter une nouvelle tâche">
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <span>Ajouter</span>
+                    </button>
+                </div>
+                
+                <!-- Suggestions rapides -->
+                <div class="quick-suggestions" id="quickSuggestions" aria-label="Suggestions rapides">
+                    <span class="suggestion-badge" data-suggestion="Faire les courses" role="button" tabindex="0" aria-label="Ajouter 'Faire les courses'">🛒 Courses</span>
+                    <span class="suggestion-badge" data-suggestion="Réviser les cours" role="button" tabindex="0" aria-label="Ajouter 'Réviser les cours'">📚 Révisions</span>
+                    <span class="suggestion-badge" data-suggestion="Sport" role="button" tabindex="0" aria-label="Ajouter 'Sport'">🏃‍♂️ Sport</span>
+                    <span class="suggestion-badge" data-suggestion="Projet IABD" role="button" tabindex="0" aria-label="Ajouter 'Projet IABD'">💻 Projet IABD</span>
+                </div>
+            </div>
+            
+            <!-- Barre de filtres et recherche -->
+            <div class="filters-section">
+                <div class="search-container">
+                    <label for="searchInput" class="visually-hidden">Rechercher une tâche</label>
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Rechercher une tâche..."
+                        aria-label="Rechercher une tâche"
+                    >
+                    <button id="clearSearchBtn" class="clear-search hidden" aria-label="Effacer la recherche">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                
+                <div class="filter-tabs" role="tablist" aria-label="Filtres des tâches">
+                    <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true" aria-label="Voir toutes les tâches">
+                        <i class="fas fa-list" aria-hidden="true"></i>
+                        <span>Toutes</span>
+                        <span class="filter-count" id="allCount" aria-label="Nombre total de tâches">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="active" role="tab" aria-selected="false" aria-label="Voir les tâches actives">
+                        <i class="fas fa-circle-notch" aria-hidden="true"></i>
+                        <span>Actives</span>
+                        <span class="filter-count" id="activeCount" aria-label="Nombre de tâches actives">0</span>
+                    </button>
+                    <button class="filter-btn" data-filter="completed" role="tab" aria-selected="false" aria-label="Voir les tâches terminées">
+                        <i class="fas fa-check-circle" aria-hidden="true"></i>
+                        <span>Terminées</span>
+                        <span class="filter-count" id="completedCount" aria-label="Nombre de tâches terminées">0</span>
+                    </button>
+                </div>
+                
+                <!-- Options de tri -->
+                <div class="sort-options">
+                    <button class="sort-btn" id="sortBtn" aria-label="Options de tri" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-sort" aria-hidden="true"></i>
+                        <span>Trier</span>
+                    </button>
+                    <div class="sort-menu hidden" id="sortMenu" role="menu" aria-label="Options de tri">
+                        <button data-sort="date-asc" role="menuitem">📅 Date (plus ancien)</button>
+                        <button data-sort="date-desc" role="menuitem">📅 Date (plus récent)</button>
+                        <button data-sort="priority" role="menuitem">⚠️ Priorité</button>
+                        <button data-sort="alpha-asc" role="menuitem">🔤 A-Z</button>
+                        <button data-sort="alpha-desc" role="menuitem">🔤 Z-A</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistiques rapides -->
+            <div class="stats-bar" id="statsBar" aria-label="Statistiques des tâches">
+                <div class="stat-item">
+                    <i class="fas fa-tasks" aria-hidden="true"></i>
+                    <span class="stat-value" id="totalTasks">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-hourglass-half" aria-hidden="true"></i>
+                    <span class="stat-value" id="activeTasks">0</span>
+                    <span class="stat-label">Actives</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-check-double" aria-hidden="true"></i>
+                    <span class="stat-value" id="completedTasks">0</span>
+                    <span class="stat-label">Terminées</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
+                    <span class="stat-value" id="completionRate">0%</span>
+                    <span class="stat-label">Progression</span>
+                </div>
+            </div>
+            
+            <!-- Barre de progression -->
+            <div class="progress-container" aria-label="Progression des tâches">
+                <div class="progress-bar" id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+            </div>
+            
+            <!-- Liste des tâches -->
+            <div class="tasks-container">
+                <div class="tasks-header">
+                    <h2 class="tasks-title">
+                        <i class="fas fa-clipboard-list" aria-hidden="true"></i>
+                        Mes tâches
+                    </h2>
+                    <button id="clearCompletedBtn" class="clear-completed-btn" aria-label="Supprimer toutes les tâches terminées">
+                        <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                        Supprimer terminées
+                    </button>
+                </div>
+                
+                <div id="tasksList" class="tasks-list" aria-label="Liste des tâches">
+                    <!-- Les tâches seront injectées ici dynamiquement -->
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle empty-icon" aria-hidden="true"></i>
+                        <h3>Aucune tâche pour le moment</h3>
+                        <p>Ajoutez votre première tâche ci-dessus pour commencer !</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer avec actions supplémentaires -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span>✨ Productivité en hausse</span>
+                    <span>💾 Sauvegarde automatique</span>
+                </div>
+                <div class="footer-actions">
+                    <button id="exportBtn" class="footer-btn" aria-label="Exporter les tâches au format JSON">
+                        <i class="fas fa-download" aria-hidden="true"></i>
+                        Exporter
+                    </button>
+                    <button id="importBtn" class="footer-btn" aria-label="Importer des tâches depuis un fichier JSON">
+                        <i class="fas fa-upload" aria-hidden="true"></i>
+                        Importer
+                    </button>
+                    <button id="clearAllBtn" class="footer-btn danger" aria-label="Supprimer toutes les tâches">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                        Tout effacer
+                    </button>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Modal des statistiques détaillées -->
+    <div id="statsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="statsModalTitle">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 id="statsModalTitle">📊 Statistiques détaillées</h3>
+                <button class="modal-close stats-modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="statsModalContent">
+                <!-- Les statistiques seront injectées ici -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal d'édition de tâche -->
+    <div id="editModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="editModalTitle">Modifier la tâche</h3>
+                <button class="modal-close" aria-label="Fermer la fenêtre de modification">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editTaskInput">Titre de la tâche *</label>
+                    <input type="text" id="editTaskInput" class="modal-input" placeholder="Titre de la tâche" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editTaskDesc">Description</label>
+                    <textarea id="editTaskDesc" class="modal-textarea" placeholder="Description (optionnelle)"></textarea>
+                </div>
+                
+                <div class="modal-options">
+                    <div class="option-group">
+                        <label for="editPriority">Priorité</label>
+                        <select id="editPriority" aria-label="Sélectionner la priorité de la tâche">
+                            <option value="low">🟢 Basse</option>
+                            <option value="medium">🟡 Moyenne</option>
+                            <option value="high">🔴 Haute</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="editCategory">Catégorie</label>
+                        <select id="editCategory" aria-label="Sélectionner la catégorie de la tâche">
+                            <option value="personal">👤 Personnel</option>
+                            <option value="work">💼 Travail</option>
+                            <option value="study">📚 Études</option>
+                            <option value="health">🏥 Santé</option>
+                            <option value="other">📌 Autre</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="editDueDate">Échéance</label>
+                        <input type="datetime-local" id="editDueDate" aria-label="Date d'échéance de la tâche">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel" aria-label="Annuler les modifications">Annuler</button>
+                <button class="btn-primary modal-save" aria-label="Enregistrer les modifications">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification toast -->
+    <div id="toast" class="toast hidden" role="status" aria-live="polite">
+        <i class="toast-icon" aria-hidden="true"></i>
+        <span class="toast-message"></span>
+    </div>
+    
+    <!-- Modal des paramètres -->
+    <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="settingsModalTitle">⚙️ Paramètres</h3>
+                <button class="modal-close settings-close" aria-label="Fermer les paramètres">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>Apparence</h4>
+                    
+                    <div class="setting-item">
+                        <label for="themeSelect">🌓 Thème</label>
+                        <select id="themeSelect">
+                            <option value="light">☀️ Clair</option>
+                            <option value="dark">🌙 Sombre</option>
+                            <option value="auto">🔄 Auto (système)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="fontSizeSelect">📏 Taille du texte</label>
+                        <select id="fontSizeSelect">
+                            <option value="small">Petite</option>
+                            <option value="medium">Moyenne</option>
+                            <option value="large">Grande</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="animationsToggle" checked>
+                            ✨ Activer les animations
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="compactViewToggle">
+                            📦 Vue compacte
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>🎵 Musique d'ambiance</h4>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="musicToggle">
+                            🎶 Activer la musique Jazz Café
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="musicVolume">🔊 Volume</label>
+                        <input type="range" id="musicVolume" min="0" max="100" value="50">
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>Notifications</h4>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="notificationsToggle" checked>
+                            🔔 Activer les notifications
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="reminderTime">⏰ Rappel avant échéance</label>
+                        <select id="reminderTime">
+                            <option value="0">Désactivé</option>
+                            <option value="15">15 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="60">1 heure</option>
+                            <option value="120">2 heures</option>
+                            <option value="1440">1 jour</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>Sauvegarde</h4>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="autoSaveToggle" checked>
+                            💾 Sauvegarde automatique
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <button id="exportSettingsBtn" class="btn-secondary">
+                            📤 Exporter les paramètres
+                        </button>
+                        <button id="importSettingsBtn" class="btn-secondary">
+                            📥 Importer les paramètres
+                        </button>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <button id="resetSettingsBtn" class="btn-danger">
+                            🔄 Réinitialiser les paramètres
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>À propos</h4>
+                    <p><strong>To-Do List Pro</strong> v2.0</p>
+                    <p>Application développée dans le cadre du cursus L3 IABD</p>
+                    <p>Musique d'ambiance : Jazz Café (Pixabay)</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary settings-save">Enregistrer</button>
+                <button class="btn-secondary settings-cancel">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ajout d'un style pour les éléments visuellement cachés -->
+    <style>
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+        }
+    </style>
+    
+    <!-- Nos scripts JavaScript -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
